@@ -1,0 +1,762 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ */
+package Frame;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime; 
+import java.time.format.DateTimeFormatter; 
+import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+/**
+ *
+ * @author bangkun
+ */
+public class Booking extends javax.swing.JPanel {
+    Connection con;
+    Statement stm;
+    ResultSet rs;
+    String sql;
+    String mbr,tm,tp;
+    DefaultTableModel model; 
+    String tanggal;
+    String waktu;
+    int harga;
+    
+    public Booking() {
+        initComponents();
+        
+        koneksiDB db = new koneksiDB();
+        db.connect();
+        con = db.connection;
+        stm = db.statement;
+        tampilCombo();
+        tampilkanData();
+        tanggalSekarang();
+        btnhapus.setEnabled(false);
+        btnsimpan.setEnabled(false);
+        btnbatalBooking.setEnabled(false);
+    }
+    
+    public void tampilCombo() {
+        try {
+            String sql = "Select * from lapangan";
+            java.sql.PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            
+            while(rs.next()){
+                cbLapangan.addItem(rs.getString("id_lapangan"));
+            }
+            rs.last();
+            int jumlahData =rs.getRow();
+            rs.first();
+        }catch(Exception e){
+            
+        }
+    }
+    public String idGenerator(String tabel, int digit){
+        String idhasil="";
+        try {
+            sql ="select id_"+tabel+" from "+tabel+" order by id_"+tabel+" desc";
+            ResultSet rs = stm.executeQuery(sql);
+            if(rs.next()){
+                String cekID = rs.getString("id_"+tabel+"").substring(2);
+                int AN =Integer.parseInt(cekID)+1;
+                String id = Integer.toString(AN);
+                String a = String.format("%0"+digit+"d", AN);
+                if(tabel.equalsIgnoreCase("jadwal")){
+                    idhasil= "JD"+a;
+                }else if(tabel.equalsIgnoreCase("pembayaran")){
+                    idhasil= "PB"+a;
+                }else if(tabel.equalsIgnoreCase("sewa")){
+                    txId.setText("SW"+a);
+                }
+            }else{
+                if(tabel.equalsIgnoreCase("jadwal")){
+                    idhasil= "JD01";
+                }else if(tabel.equalsIgnoreCase("pembayaran")){
+                    idhasil= "PB01";
+                }else if(tabel.equalsIgnoreCase("sewa")){
+                    txId.setText("SW0001");
+                }
+            }   
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, e);
+        }
+        return idhasil;
+    }
+    
+    public void tampilkanData(){
+        model = new DefaultTableModel();
+        model.addColumn("No.");
+        model.addColumn("Id Sewa");
+        model.addColumn("Id Member");
+        model.addColumn("Nama Team");
+        model.addColumn("Telepon");
+        model.addColumn("Id Lapangan");
+        model.addColumn("Tanggal Main");
+        model.addColumn("Mulai");
+        model.addColumn("Selesai");
+        model.addColumn("Harga");
+        model.addColumn("Status");
+        
+        try{
+            int no = 1;
+            sql = "Select * from booking";
+            ResultSet rs = stm.executeQuery(sql);
+            
+            while(rs.next()){
+                model.addRow(new Object[]{no++, rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9),rs.getString(10)});
+                tbBooking.setModel(model);
+                
+            }
+        }catch(SQLException e){
+            System.out.println("ERROR : "+e.getMessage());
+        }
+    }
+    
+    public void kosongkanForm(){
+        
+        txmember.setText(null);
+        txteam.setText(null);
+        txtlp.setText(null);
+        cbLapangan.setSelectedItem(this);
+        txtgl_main.setCalendar(null);
+        txdurasi.setText(null);
+        txmulai.setText(null);
+        txselesai.setText(null);
+        idGenerator("sewa",4);
+        
+    }
+    public void tanggalSekarang(){
+        LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter dateformat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeformat = DateTimeFormatter.ofPattern("HH:mm");
+        tanggal = date.format(dateformat);
+        waktu = date.format(timeformat);
+    }
+  
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        txbayar = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbBooking = new javax.swing.JTable();
+        jLabel8 = new javax.swing.JLabel();
+        txteam = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txcari = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        txdurasi = new javax.swing.JTextField();
+        txkembalian = new javax.swing.JTextField();
+        txmember = new javax.swing.JTextField();
+        txselesai = new javax.swing.JTextField();
+        txtlp = new javax.swing.JTextField();
+        txId = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        cbLapangan = new javax.swing.JComboBox<>();
+        jLabel10 = new javax.swing.JLabel();
+        txmulai = new javax.swing.JTextField();
+        txtgl_main = new com.toedter.calendar.JDateChooser();
+        jLabel18 = new javax.swing.JLabel();
+        txharga = new javax.swing.JTextField();
+        jLabel20 = new javax.swing.JLabel();
+        btnSetMember = new javax.swing.JButton();
+        btntambah = new javax.swing.JButton();
+        btnhapus = new javax.swing.JButton();
+        btnsimpan = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        btncekharga = new javax.swing.JButton();
+        btnbatalBooking = new javax.swing.JButton();
+        btnkembalian = new javax.swing.JButton();
+        jLabel14 = new javax.swing.JLabel();
+
+        setBackground(new java.awt.Color(250, 250, 250));
+
+        jLabel6.setText("DURASI");
+
+        jLabel4.setText("NO TELEPON");
+
+        jLabel7.setText("jam");
+
+        jLabel1.setText("KODE TRANSAKSI");
+
+        tbBooking.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7", "Title 8", "Title 9"
+            }
+        ));
+        tbBooking.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbBookingMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tbBooking);
+
+        jLabel8.setText("MULAI");
+
+        txteam.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txteamActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setText("KEMBALIAN");
+
+        jLabel9.setText("SELESAI");
+
+        jLabel5.setText("KODE LAPANGAN");
+
+        jLabel2.setText("KODE MEMBER");
+
+        txcari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txcariKeyReleased(evt);
+            }
+        });
+
+        jLabel3.setText("NAMA TEAM");
+
+        txmember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txmemberActionPerformed(evt);
+            }
+        });
+
+        txtlp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtlpActionPerformed(evt);
+            }
+        });
+
+        txId.setEnabled(false);
+        txId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txIdActionPerformed(evt);
+            }
+        });
+
+        jLabel12.setText("TANGGAL MAIN");
+
+        cbLapangan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-- SELECT --" }));
+        cbLapangan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbLapanganActionPerformed(evt);
+            }
+        });
+
+        jLabel10.setText("BAYAR");
+
+        txtgl_main.setBackground(new java.awt.Color(250, 250, 250));
+
+        jLabel18.setText("HARGA");
+
+        txharga.setEnabled(false);
+
+        btnSetMember.setText("cek");
+        btnSetMember.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSetMemberActionPerformed(evt);
+            }
+        });
+
+        btntambah.setBackground(new java.awt.Color(153, 153, 255));
+        btntambah.setText("TAMBAH");
+        btntambah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btntambahActionPerformed(evt);
+            }
+        });
+
+        btnhapus.setBackground(new java.awt.Color(153, 153, 255));
+        btnhapus.setText("HAPUS");
+        btnhapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnhapusActionPerformed(evt);
+            }
+        });
+
+        btnsimpan.setBackground(new java.awt.Color(153, 153, 255));
+        btnsimpan.setText("SIMPAN");
+        btnsimpan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnsimpanActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("CARI :");
+
+        jButton1.setText("+");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        btncekharga.setText("cek");
+        btncekharga.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btncekhargaActionPerformed(evt);
+            }
+        });
+
+        btnbatalBooking.setBackground(new java.awt.Color(255, 204, 0));
+        btnbatalBooking.setText("PEMBATALAN BOOKING");
+        btnbatalBooking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnbatalBookingActionPerformed(evt);
+            }
+        });
+
+        btnkembalian.setText("cek");
+        btnkembalian.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnkembalianActionPerformed(evt);
+            }
+        });
+
+        jLabel14.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel14.setText("FORM INPUT BOOKING");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btntambah, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(134, 134, 134)
+                        .addComponent(btnsimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(124, 124, 124)
+                        .addComponent(btnhapus, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnbatalBooking))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 941, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(34, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txId, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(txteam, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txmember, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtlp, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(btnSetMember))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel18)
+                                .addGap(6, 6, 6)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(95, 95, 95)
+                                        .addComponent(jLabel20))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(83, 83, 83)
+                                        .addComponent(txharga, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(12, 12, 12)
+                                        .addComponent(btncekharga)))))
+                        .addGap(60, 60, 60)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txdurasi, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(4, 4, 4)
+                                .addComponent(jLabel7))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel12))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtgl_main, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cbLapangan, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(jLabel10)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txbayar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel8)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txmulai, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txselesai, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel11)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txkembalian, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnkembalian)))
+                        .addGap(142, 142, 142))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txcari, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(125, 125, 125))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel14)
+                        .addGap(382, 382, 382))))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txId, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnSetMember, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txmember)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(26, 26, 26)
+                                .addComponent(txteam, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtlp, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btncekharga, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txharga)
+                            .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(22, 22, 22)
+                        .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(cbLapangan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(21, 21, 21)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel12)
+                            .addComponent(txtgl_main, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(txdurasi, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7))
+                        .addGap(15, 15, 15)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel8)
+                                .addComponent(jLabel9)
+                                .addComponent(txselesai, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txmulai, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txbayar, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txkembalian, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnkembalian))))
+                .addGap(15, 15, 15)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txcari, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13))
+                .addGap(31, 31, 31)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(37, 37, 37)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btntambah, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnsimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnhapus, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnbatalBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(82, 82, 82))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void txteamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txteamActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txteamActionPerformed
+
+    private void txmemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txmemberActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txmemberActionPerformed
+
+    private void txtlpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtlpActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtlpActionPerformed
+
+    private void txIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txIdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txIdActionPerformed
+
+    private void cbLapanganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbLapanganActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbLapanganActionPerformed
+
+    private void tbBookingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbBookingMouseClicked
+        txId.setText(tbBooking.getValueAt(tbBooking.getSelectedRow(), 1).toString());
+        btnbatalBooking.setEnabled(true);
+        btnhapus.setEnabled(true);
+        btnsimpan.setEnabled(true);
+        btnsimpan.setText("BATAL");
+        
+    }//GEN-LAST:event_tbBookingMouseClicked
+
+    private void btnSetMemberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetMemberActionPerformed
+
+        
+        
+        
+    }//GEN-LAST:event_btnSetMemberActionPerformed
+
+    private void btntambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntambahActionPerformed
+         if(btntambah.getText().equalsIgnoreCase("TAMBAH")){
+            idGenerator("sewa",4);
+            btnsimpan.setText("SIMPAN");
+            btntambah.setText("REFRESH");
+            btnsimpan.setEnabled(true);
+        }else if(btntambah.getText().equalsIgnoreCase("REFRESH")){
+            btntambah.setText("TAMBAH");
+            DefaultTableModel model = (DefaultTableModel)tbBooking.getModel();
+            model.setRowCount(0);
+            tampilkanData();
+            kosongkanForm();
+            btnsimpan.setEnabled(false);
+        }
+    }//GEN-LAST:event_btntambahActionPerformed
+    private void rumusHarga(){
+        int jam = Integer.parseInt(txmulai.getText().substring(0, 2));
+        String lapangan= (String) cbLapangan.getSelectedItem();
+        if(lapangan.equalsIgnoreCase("LAP01")){
+            if(jam>0 && jam <18){
+                harga=60000;
+            }else if(jam>=18 && jam<=24){
+                harga=80000;
+            }            
+        }else if(lapangan.equalsIgnoreCase("LAP02")){
+            if(jam>0 && jam <18){
+                harga=70000;
+            }else if(jam>=18 && jam<=24){
+                harga=90000;
+            }         
+        }else if(lapangan.equalsIgnoreCase("LAP03")){
+            if(jam>0 && jam <18){
+                harga=80000;
+            }else if(jam>=18 && jam<=24){
+                harga=100000;
+            }         
+        }else if(lapangan.equalsIgnoreCase("LAP04")){
+            if(jam>0 && jam <18){
+                harga=90000;
+            }else if(jam>=18 && jam<=24){
+                harga=110000;
+            }         
+        }
+        
+    }
+    private void btnsimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsimpanActionPerformed
+        if (btnsimpan.getText().equalsIgnoreCase("BATAL")){
+                kosongkanForm();
+                btnsimpan.setText("SIMPAN");
+                btnsimpan.setEnabled(false);
+                btnhapus.setEnabled(false);  
+                btnbatalBooking.setEnabled(false);
+        }else if(btnsimpan.getText().equalsIgnoreCase("SIMPAN")){
+            int bayar = Integer.parseInt(txbayar.getText()); 
+            String status = "";
+            if(bayar>=harga){
+                status = "lunas";
+            }else if(bayar<harga){
+                status = "belum lunas";
+            }
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String tglmain = String.valueOf(sdf.format(txtgl_main.getDate()));
+            int kembalian = bayar-harga;
+            try {                
+                    sql = "INSERT INTO sewa VALUES ('"+txId.getText()+"','"+tanggal+"','"+txmember.getText()+"','"+txteam.getText()+"','"+txtlp.getText()+"','"+txharga.getText()+"','"+status+"')";
+                    stm.executeUpdate(sql);
+                    sql = "insert into jadwal values('"+idGenerator("jadwal",2)+"','"+tglmain+"','"+cbLapangan.getSelectedItem()+"',"+txdurasi.getText()+",'"+txmulai.getText()+"','"+txselesai.getText()+"','dibooking','"+txId.getText()+"')";
+                    stm.executeUpdate(sql);
+                    JOptionPane.showMessageDialog(null, "Data berhasil ditambahkan");
+                    tampilkanData();
+                    kosongkanForm();
+                }catch(Exception e){
+                    JOptionPane.showMessageDialog(null,"Data gagal disimpan, "+ e.getMessage());
+                }
+        }    
+    }//GEN-LAST:event_btnsimpanActionPerformed
+
+    private void txcariKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txcariKeyReleased
+        String cari = txcari.getText();
+        TableRowSorter tr = new TableRowSorter(model);
+        tbBooking.setRowSorter(tr);
+        tr.setRowFilter(RowFilter.regexFilter(cari));
+    }//GEN-LAST:event_txcariKeyReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if(txmember.getText().equalsIgnoreCase("")){
+        }else{
+            txmember.setEnabled(false);
+            try {
+            String sql = "Select * from member where id_member='"+txmember.getText()+"'";
+            java.sql.PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            
+            while(rs.next()){
+                txteam.setText(rs.getString("nama_team"));
+                txtlp.setText(rs.getString("no_telp"));
+                txteam.setEnabled(false);
+                txtlp.setEnabled(false);
+            }
+            
+        }catch(Exception e){
+            
+        }
+        }
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btncekhargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncekhargaActionPerformed
+        rumusHarga();
+        String total = String.valueOf(harga);
+        txharga.setText(total);
+    }//GEN-LAST:event_btncekhargaActionPerformed
+
+    private void btnhapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnhapusActionPerformed
+        btntambah.setEnabled(true);
+        btnsimpan.setEnabled(false);
+        btnhapus.setEnabled(false);
+        btnbatalBooking.setEnabled(false);
+        try {
+            sql = "Select * from sewa where id_sewa='"+txId.getText()+"'";
+            java.sql.PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+            sql = "delete from jadwal where id_sewa='"+txId.getText()+"'";
+            stm.executeUpdate(sql);
+            }
+            sql = "delete from sewa where id_sewa='"+txId.getText()+"'"; 
+            stm.executeUpdate(sql);
+            JOptionPane.showMessageDialog(null, "Data berhasil dihapus");
+            tampilkanData();
+            kosongkanForm();
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Data gagal dihapus, "+ e.getMessage());
+        }
+    }//GEN-LAST:event_btnhapusActionPerformed
+
+    private void btnbatalBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnbatalBookingActionPerformed
+        try{
+            sql = "update sewa set status='dibatalkan' where id_sewa = '"+txId.getText()+"'";
+            stm.executeUpdate(sql);
+            kosongkanForm();
+            btnbatalBooking.setEnabled(false);
+        }catch(Exception e){
+            
+        }
+    }//GEN-LAST:event_btnbatalBookingActionPerformed
+
+    private void btnkembalianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnkembalianActionPerformed
+        int bayar = Integer.parseInt(txbayar.getText()); 
+        if(bayar<harga){
+            btnkembalian.setText("");
+        }else{
+            int kembali = bayar-harga;
+            String kembalian = String.valueOf(kembali);
+            btnkembalian.setText(kembalian);
+        }
+    }//GEN-LAST:event_btnkembalianActionPerformed
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSetMember;
+    private javax.swing.JButton btnbatalBooking;
+    private javax.swing.JButton btncekharga;
+    private javax.swing.JButton btnhapus;
+    private javax.swing.JButton btnkembalian;
+    private javax.swing.JButton btnsimpan;
+    private javax.swing.JButton btntambah;
+    private javax.swing.JComboBox<String> cbLapangan;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tbBooking;
+    private javax.swing.JTextField txId;
+    private javax.swing.JTextField txbayar;
+    private javax.swing.JTextField txcari;
+    private javax.swing.JTextField txdurasi;
+    private javax.swing.JTextField txharga;
+    private javax.swing.JTextField txkembalian;
+    public javax.swing.JTextField txmember;
+    private javax.swing.JTextField txmulai;
+    private javax.swing.JTextField txselesai;
+    public javax.swing.JTextField txteam;
+    private com.toedter.calendar.JDateChooser txtgl_main;
+    public javax.swing.JTextField txtlp;
+    // End of variables declaration//GEN-END:variables
+}
